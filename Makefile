@@ -74,12 +74,16 @@ $(TARGET): moveObjs
 	$(CXX) $(LDFLAGS) $(OBJPATHS) -o $(TARGET) 
 
 $(BUILDDIR):
-	mkdir $(BUILDDIR)
+	mkdir $(BUILDDIR) -p
 $(BUILDDIR)/depend: $(TARGETS) $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) -MM $(SOURCES) | sed 's|[a-zA-Z0-9_-]*\.o|$(BUILDDIR)/&|' > $(BUILDDIR)/depend
 	
 include $(BUILDDIR)/depend
 
 # Shaders
-assets/shaders/%.spv: shaders/%.glsl
+
+assets/shaders:
+	mkdir -p assets/shaders
+
+assets/shaders/%.spv: shaders/%.glsl assets/shaders
 	glslang -V $< -o $@
